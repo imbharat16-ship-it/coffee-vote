@@ -223,21 +223,30 @@
                 // Get UTM data
                 const utmData = window.getUTMData();
                 
-                // Build Notion form URL with UTM parameters
+                // Build Notion form URL with UTM parameters for pre-filling
                 let notionUrl = 'https://flat-mousepad-021.notion.site/2945d5382a31804f99d0dd2ab319767e';
                 
                 if (utmData && (utmData.source || utmData.medium || utmData.campaign || utmData.content)) {
                     const params = new URLSearchParams();
+                    
+                    // Add UTM parameters
                     if (utmData.source) params.append('utm_source', utmData.source);
                     if (utmData.medium) params.append('utm_medium', utmData.medium);
                     if (utmData.campaign) params.append('utm_campaign', utmData.campaign);
                     if (utmData.content) params.append('utm_content', utmData.content);
+                    
+                    // Add pre-fill parameters for Notion form fields
+                    if (utmData.source) params.append('platform', utmData.source);
+                    if (utmData.campaign) params.append('campaign', utmData.campaign);
+                    if (utmData.content) params.append('creative', utmData.content);
+                    if (utmData.source) params.append('ad_source', `${utmData.source} - ${utmData.content || 'unknown'}`);
                     
                     notionUrl += '?' + params.toString();
                 }
                 
                 // Track the click
                 console.log('Redirecting to Notion form with UTM data:', utmData);
+                console.log('Full URL:', notionUrl);
                 
                 // Redirect to Notion form
                 window.location.href = notionUrl;
