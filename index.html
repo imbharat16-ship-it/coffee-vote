@@ -62,11 +62,64 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
-        .form-iframe {
-            width: 100%;
-            height: 600px;
+        .form-redirect {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .form-redirect h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .form-redirect p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .vote-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border: none;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .vote-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .form-info {
+            background: #f8f9fa;
+            padding: 25px;
             border-radius: 10px;
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-info p {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .form-info ul {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .form-info li {
+            margin-bottom: 8px;
         }
         
         .utm-display {
@@ -109,11 +162,24 @@
         </div>
         
         <div class="form-container">
-            <iframe 
-                src="https://flat-mousepad-021.notion.site/2945d5" 
-                class="form-iframe"
-                title="Coffee Flavor Vote Form">
-            </iframe>
+            <div class="form-redirect">
+                <h2>Ready to Vote? 🗳️</h2>
+                <p>Click the button below to access the coffee flavor voting form. Your UTM data will be automatically tracked.</p>
+                
+                <button id="vote-button" class="vote-button">
+                    Vote Now - Choose Your Favorite Coffee Flavor
+                </button>
+                
+                <div class="form-info">
+                    <p><strong>What happens next?</strong></p>
+                    <ul>
+                        <li>You'll be redirected to the voting form</li>
+                        <li>Your ad source will be automatically tracked</li>
+                        <li>Vote for your favorite coffee flavor</li>
+                        <li>Help us understand ad performance across platforms</li>
+                    </ul>
+                </div>
+            </div>
             
             <!-- UTM Parameters Display (for debugging) -->
             <div id="utm-display" class="utm-display hidden">
@@ -150,6 +216,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Wait for UTM tracker to initialize
             setTimeout(displayUTMInfo, 100);
+            
+            // Set up vote button click handler
+            const voteButton = document.getElementById('vote-button');
+            voteButton.addEventListener('click', function() {
+                // Get UTM data
+                const utmData = window.getUTMData();
+                
+                // Build Notion form URL with UTM parameters
+                let notionUrl = 'https://flat-mousepad-021.notion.site/2945d5382a31804f99d0dd2ab319767e';
+                
+                if (utmData && (utmData.source || utmData.medium || utmData.campaign || utmData.content)) {
+                    const params = new URLSearchParams();
+                    if (utmData.source) params.append('utm_source', utmData.source);
+                    if (utmData.medium) params.append('utm_medium', utmData.medium);
+                    if (utmData.campaign) params.append('utm_campaign', utmData.campaign);
+                    if (utmData.content) params.append('utm_content', utmData.content);
+                    
+                    notionUrl += '?' + params.toString();
+                }
+                
+                // Track the click
+                console.log('Redirecting to Notion form with UTM data:', utmData);
+                
+                // Redirect to Notion form
+                window.location.href = notionUrl;
+            });
         });
     </script>
 </body>
